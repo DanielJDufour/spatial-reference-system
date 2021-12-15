@@ -1,0 +1,31 @@
+{
+  "name": "spatial-reference-system",
+  "version": "0.0.0",
+  "description": "Modern Spatial Reference System Class. Supports EPSG Codes, PROJ4 String, and Well-Known Text.",
+  "main": "index.js",
+  "files": [
+    "index.js"
+  ],
+  "scripts": {
+    "format": "npx prettier --arrow-parens=avoid --print-width=120 --trailing-comma=none --write *.js",
+    "test": "node test.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DanielJDufour/spatial-reference-system.git"
+  },
+  "keywords": [
+    "crs",
+    "map",
+    "proj",
+    "proj4",
+    "projection",
+    "srs"
+  ],
+  "author": "Daniel J. Dufour",
+  "license": "CC0-1.0",
+  "bugs": {
+    "url": "https://github.com/DanielJDufour/spatial-reference-system/issues"
+  },
+  "homepage": "https://github.com/DanielJDufour/spatial-reference-system#readme"
+}
