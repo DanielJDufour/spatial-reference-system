@@ -6,6 +6,13 @@ Modern Spatial Reference System Class.  Supports EPSG Codes, PROJ4 String, and W
 npm install spatial-reference-system
 ```
 
+# uses
+- [proj4js](http://proj4js.org/)
+- [proj4js-definitions](https://github.com/danieljdufour/proj4js-definitions)
+- [proj4-fully-loaded](https://github.com/danieljdufour/proj4-fully-loaded)
+- [get-epsg-code](https://github.com/danieljdufour/get-epsg-code)
+- and [more](https://github.com/DanielJDufour/spatial-reference-system/blob/main/package.json)
+
 # usage
 ### check if two projections are equivalent
 ```js
