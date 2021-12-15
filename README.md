@@ -1,17 +1,15 @@
 # spatial-reference-system
-Modern Spatial Reference System Class.  Supports EPSG Codes, PROJ4 String, and Well-Known Text.
+> Modern Spatial Reference System Class.
+
+# supports
+- EPSG Codes
+- PROJ4 Strings
+- ESRI and OGC Well-Known Text
 
 # install
 ```bash
 npm install spatial-reference-system
 ```
-
-# uses
-- [proj4js](http://proj4js.org/)
-- [proj4js-definitions](https://github.com/danieljdufour/proj4js-definitions)
-- [proj4-fully-loaded](https://github.com/danieljdufour/proj4-fully-loaded)
-- [get-epsg-code](https://github.com/danieljdufour/get-epsg-code)
-- and [more](https://github.com/DanielJDufour/spatial-reference-system/blob/main/package.json)
 
 # usage
 ### check if two projections are equivalent
@@ -41,3 +39,10 @@ const srs = new SRS(`PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",...`);
 console.log(srs.proj4);
 // "+proj=utm +zone=16 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 ```
+
+# uses
+- [proj4js](http://proj4js.org/)
+- [proj4js-definitions](https://github.com/danieljdufour/proj4js-definitions)
+- [proj4-fully-loaded](https://github.com/danieljdufour/proj4-fully-loaded)
+- [get-epsg-code](https://github.com/danieljdufour/get-epsg-code)
+- and [more](https://github.com/DanielJDufour/spatial-reference-system/blob/main/package.json)
