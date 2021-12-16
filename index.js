@@ -17,14 +17,16 @@ const parseWKT = wkt => {
 
 class SRS {
   code = null;
+  prj = null;
   proj4 = null;
   proj4js = null;
   wkt = null;
-  constructor(it, { code, proj4: _proj4, proj4js, wkt } = {}) {
+  constructor(it, { code, prj: _prj, proj4: _proj4, proj4js, wkt } = {}) {
     // pre-process
     if (typeof it === "string") it.trim();
 
     if (code) this.code = code;
+    if (_prj) this.prj = _prj;
     if (_proj4) this.proj4 = _proj4;
     if (proj4js) this.proj4js = proj4js;
     if (wkt) this.wkt = wkt;
@@ -85,6 +87,9 @@ class SRS {
         return it;
       }
     }
+
+    // prefer OGC WKT over ESRI WKT
+    this.prj ??= this.wkt?.ogc ?? this.wkt?.esri;
   }
 
   // check if an input srs is equivalent to the given one

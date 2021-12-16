@@ -40,6 +40,13 @@ console.log(srs.proj4);
 // "+proj=utm +zone=16 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 ```
 
+### get .prj file
+```js
+const srs = new SRS(`PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",...`);
+console.log(srs.prj);
+// "PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",..."
+```
+
 # uses
 - [proj4js](http://proj4js.org/)
 - [proj4js-definitions](https://github.com/danieljdufour/proj4js-definitions)
