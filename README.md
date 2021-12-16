@@ -5,6 +5,7 @@
 - EPSG Codes
 - PROJ4 Strings
 - ESRI and OGC Well-Known Text
+- PRJ File
 
 # install
 ```bash
