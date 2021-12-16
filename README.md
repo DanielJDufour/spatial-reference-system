@@ -42,6 +42,8 @@ console.log(srs.proj4);
 
 ### get .prj file
 ```js
+import { SRS } from "spatial-reference-system";
+
 const srs = new SRS(`PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",...`);
 console.log(srs.prj);
 // "PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",..."
