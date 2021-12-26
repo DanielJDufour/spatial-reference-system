@@ -1,8 +1,8 @@
+const projData = require("proj-data");
+const proj4 = require("proj4");
 const getConstructorName = require("get-constructor-name");
-const defs = require("proj4js-definitions");
 const getEPSGCode = require("get-epsg-code");
 const isWKT = require("is-wkt");
-const proj4 = require("proj4-fully-loaded");
 const wktParser = require("wkt-parser");
 
 const isDef = o => o !== undefined && o !== null && o !== "";
@@ -14,6 +14,24 @@ const parseWKT = wkt => {
     return undefined;
   }
 };
+
+const clone = data => JSON.parse(JSON.stringify(data));
+
+const lookup = name => {
+  let result = {};
+  if (name in projData) {
+    Object.assign(result, projData[name]);
+  }
+  if (proj4.defs[name]) {
+    result.proj4js = { name, obj: proj4.defs[name] };
+  }
+  return result;
+};
+
+// load proj4 up with projData
+// for some reason, don't have proj4 for all the projections
+// in which case prefer wkt
+proj4.defs(Object.entries(projData).map(([k, { proj4, wkt }]) => [k, proj4 || wkt]));
 
 class SRS {
   code = null;
@@ -33,37 +51,20 @@ class SRS {
 
     if (typeof it === "number") {
       this.code = it;
-      // lookup an see if can grab definition from proj4js instance
-      const name = `EPSG:${it}`;
-      this.proj4js = { name, obj: proj4?.defs?.[name] };
-      this.proj4 = defs.find(entry => entry[0] === name)?.[1];
-      return this;
     }
 
     if (typeof it === "string") {
       if (it.match(/^EPSG:\d+$/)) {
         this.code = Number(it.slice(it.indexOf(":") + 1));
-        this.proj4js = { name: it, obj: proj4?.defs?.[it] };
-        this.proj4 = defs.find(entry => entry[0] === it)?.[1];
-        return this;
       } else if (it.match(/^\d+$/)) {
         this.code = Number(it);
-        const name = `EPSG:${it}`;
-        this.proj4js = { name, obj: proj4?.defs?.[name] };
-        this.proj4 = defs.find(entry => entry[0] === name)?.[1];
-        return this;
       } else if (isWKT(it)) {
         this.wkt = {
           [it.includes("AUTHORITY") ? "ogc" : "esri"]: it
         };
-
         const code = getEPSGCode(it);
         if (code) {
           this.code = code;
-          const name = `EPSG:${code}`;
-          const obj = proj4?.defs?.[name] || parseWKT(it);
-          this.proj4js = { name, obj };
-          this.proj4 = defs.find(entry => entry[0] === name)?.[1];
         } else {
           const obj = parseWKT(it);
           if (obj) this.proj4js = { obj };
@@ -73,18 +74,27 @@ class SRS {
         const code = getEPSGCode(it);
         if (code) {
           this.code = code;
-          const name = `EPSG:${code}`;
-          if (!(name in proj4.defs)) {
-            throw new Error("NOT IN PROJ$");
-          }
-          this.proj4js = { name, obj: proj4?.defs?.[name] };
-          this.proj4 = defs.find(entry => entry[0] === name)?.[1] ?? it;
         }
       }
     } else if (typeof it === "object") {
       const constructorName = getConstructorName(it);
       if (constructorName === "SRS") {
         return it;
+      }
+    }
+
+    if (this.code) {
+      this.id = `EPSG:${this.code}`;
+      const found = lookup(this.id);
+      if (found) {
+        const { proj4, proj4js, wkt, esriwkt } = found;
+        this.proj4js ??= proj4js;
+        this.proj4 ??= proj4;
+        if (wkt || esriwkt) {
+          this.wkt ??= {};
+          this.wkt.ogc ??= wkt;
+          this.wkt.esri ??= esriwkt;
+        }
       }
     }
 
