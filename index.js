@@ -80,6 +80,20 @@ class SRS {
       const constructorName = getConstructorName(it);
       if (constructorName === "SRS") {
         return it;
+      } else {
+        const entries = Object.entries(it);
+
+        // find wkt values
+        const wkt_values = Object.values(it).filter(it => typeof it === "string" && isWKT(it));
+
+        // find proj4 string
+        const proj4_string = Object.values(it => it.startsWith("+"));
+
+        // try using wkt values
+        for (let i = 0; i < wkt_values.length; i++) {
+          const code = getEPSGCode(wkt_values[i]);
+          if (code) this.code = code;
+        }
       }
     }
 
@@ -131,4 +145,7 @@ function equivalent(a, b, { debug = false } = { debug: false }) {
   return a.eq(b, { debug });
 }
 
-module.exports = { equivalent, SRS };
+module.exports = {
+  equivalent,
+  SRS
+};
