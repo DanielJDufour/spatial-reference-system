@@ -3,6 +3,7 @@ const proj4 = require("proj4");
 const getConstructorName = require("get-constructor-name");
 const getEPSGCode = require("get-epsg-code");
 const isWKT = require("is-wkt");
+const walk = require("deepest-walk");
 const wktParser = require("wkt-parser");
 
 const isDef = o => o !== undefined && o !== null && o !== "";
@@ -13,6 +14,16 @@ const parseWKT = wkt => {
   } catch (error) {
     return undefined;
   }
+};
+
+const getAllObjectValueStrings = obj => {
+  const strings = [];
+  walk({
+    data: obj,
+    types: ["object-value-string"],
+    callback: ({ data }) => strings.push(data)
+  });
+  return strings;
 };
 
 const clone = data => JSON.parse(JSON.stringify(data));
@@ -81,13 +92,13 @@ class SRS {
       if (constructorName === "SRS") {
         return it;
       } else {
-        const entries = Object.entries(it);
+        const strings = getAllObjectValueStrings(it);
 
         // find wkt values
-        const wkt_values = Object.values(it).filter(it => typeof it === "string" && isWKT(it));
+        const wkt_values = strings.filter(it => isWKT(it));
 
         // find proj4 string
-        const proj4_string = Object.values(it => it.startsWith("+"));
+        const proj4_string = strings.find(it => it.startsWith("+"));
 
         // try using wkt values
         for (let i = 0; i < wkt_values.length; i++) {

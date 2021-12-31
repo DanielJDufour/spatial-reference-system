@@ -29,6 +29,7 @@
   },
   "homepage": "https://github.com/DanielJDufour/spatial-reference-system#readme",
   "dependencies": {
+    "deepest-walk": "^1.0.2",
     "get-constructor-name": "^0.0.1",
     "get-epsg-code": "^0.1.0",
     "is-wkt": "^0.0.1",
