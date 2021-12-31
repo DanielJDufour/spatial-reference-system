@@ -1,6 +1,6 @@
 {
   "name": "spatial-reference-system",
-  "version": "0.2.2",
+  "version": "0.3.0",
   "description": "Modern Spatial Reference System Class. Supports EPSG Codes, PROJ4 String, and Well-Known Text.",
   "main": "index.js",
   "files": [
