@@ -17,7 +17,10 @@ npm install spatial-reference-system
 ```js
 import { SRS } from "spatial-reference-system";
 
-const srs = new SRS(3857);
+// technically SRS is a function that initializes
+// a class called SRS, so the new keyword is unecessary
+const srs = SRS(3857);
+
 console.log(srs);
 SRS {
   // numerical code of the projection
@@ -81,7 +84,7 @@ equivalent(web_mercator_esri_wkt, web_mercator_ogc_wkt);
 ```js
 import { SRS } from "spatial-reference-system";
 
-const srs = new SRS(`PROJCS["WGS_1984_Web_Mercator_Auxiliary_Sphere",...`);
+const srs = SRS(`PROJCS["WGS_1984_Web_Mercator_Auxiliary_Sphere",...`);
 console.log(srs.code);
 // 3857
 ```
@@ -90,7 +93,7 @@ console.log(srs.code);
 ```js
 import { SRS } from "spatial-reference-system";
 
-const srs = new SRS(`PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",...`);
+const srs = SRS(`PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",...`);
 console.log(srs.proj4);
 // "+proj=utm +zone=16 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs"
 ```
@@ -99,7 +102,7 @@ console.log(srs.proj4);
 ```js
 import { SRS } from "spatial-reference-system";
 
-const srs = new SRS(`PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",...`);
+const srs = SRS(`PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",...`);
 console.log(srs.prj);
 // "PROJCS["NAD83 / UTM zone 16N",GEOGCS["NAD83",..."
 ```

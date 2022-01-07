@@ -109,16 +109,20 @@ class SRS {
     }
 
     if (this.code) {
-      this.id = `EPSG:${this.code}`;
-      const found = lookup(this.id);
-      if (found) {
-        const { proj4, proj4js, wkt, esriwkt } = found;
-        this.proj4js ??= proj4js;
-        this.proj4 ??= proj4;
-        if (wkt || esriwkt) {
-          this.wkt ??= {};
-          this.wkt.ogc ??= wkt;
-          this.wkt.esri ??= esriwkt;
+      if (this.code === 32767) {
+        // custom projection
+      } else {
+        this.id = `EPSG:${this.code}`;
+        const found = lookup(this.id);
+        if (found) {
+          const { proj4, proj4js, wkt, esriwkt } = found;
+          this.proj4js ??= proj4js;
+          this.proj4 ??= proj4;
+          if (wkt || esriwkt) {
+            this.wkt ??= {};
+            this.wkt.ogc ??= wkt;
+            this.wkt.esri ??= esriwkt;
+          }
         }
       }
     }
@@ -131,8 +135,10 @@ class SRS {
   eq(other, { debug = false } = { debug: false }) {
     other = new SRS(other);
 
+    const custom = this.code === 32767;
+
     if (debug) console.log([this.code, other.code]);
-    if (isDef(this.code) && this.code === other.code) return true;
+    if (isDef(this.code) && !custom && this.code === other.code) return true;
 
     if (debug) console.log([this, other]);
     if (isDef(this.proj4) && this.proj4 === other.proj4) return true;
@@ -141,10 +147,12 @@ class SRS {
 
     // check if practically the same, ignoring stuff that doesn't matter
     // like title and no_defs
-    const keys = ["projName", "a", "b", "lat_ts", "long0", "x0", "y0", "k0", "units", "datumCode"];
-    const this_data = keys.map(k => this.proj4js.obj[k]);
-    const other_data = keys.map(k => other.proj4js.obj[k]);
-    if (JSON.stringify(this_data) === JSON.stringify(other_data)) return true;
+    if (this?.proj4js?.obj && other?.proj4js?.obj) {
+      const keys = ["projName", "a", "b", "lat_ts", "long0", "x0", "y0", "k0", "units", "datumCode"];
+      const this_data = keys.map(k => this.proj4js.obj[k]);
+      const other_data = keys.map(k => other.proj4js.obj[k]);
+      if (JSON.stringify(this_data) === JSON.stringify(other_data)) return true;
+    }
 
     return false;
   }
@@ -156,7 +164,11 @@ function equivalent(a, b, { debug = false } = { debug: false }) {
   return a.eq(b, { debug });
 }
 
+SRS_CLASS = SRS;
+
 module.exports = {
   equivalent,
-  SRS
+  SRS: function SRS() {
+    return new SRS_CLASS(...arguments);
+  }
 };
