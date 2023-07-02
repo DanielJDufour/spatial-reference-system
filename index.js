@@ -4,9 +4,16 @@ const getConstructorName = require("get-constructor-name");
 const getEPSGCode = require("get-epsg-code");
 const isWKT = require("is-wkt");
 const walk = require("deepest-walk");
+const wktcrs = require("wkt-crs");
 const wktParser = require("wkt-parser");
 
 const isDef = o => o !== undefined && o !== null && o !== "";
+
+const sortWKT = wkt => {
+  const { data } = wktcrs.parse(wkt, { raw: true });
+  wktcrs.sort(data);
+  return wktcrs.unparse(data, { raw: true }).data;
+};
 
 const parseWKT = wkt => {
   try {
@@ -33,8 +40,9 @@ const lookup = name => {
   if (name in projData) {
     Object.assign(result, projData[name]);
   }
-  if (proj4.defs[name]) {
-    result.proj4js = { name, obj: proj4.defs[name] };
+  const { defs } = proj4.default || proj4;
+  if (defs[name]) {
+    result.proj4js = { name, obj: defs[name] };
   }
   return result;
 };
@@ -42,7 +50,7 @@ const lookup = name => {
 // load proj4 up with projData
 // for some reason, don't have proj4 for all the projections
 // in which case prefer wkt
-proj4.defs(Object.entries(projData).map(([k, { proj4, wkt }]) => [k, proj4 || wkt]));
+(proj4.default || proj4).defs(Object.entries(projData).map(([k, { proj4, wkt }]) => [k, proj4 || wkt]));
 
 class SRS {
   code = null;
@@ -120,8 +128,8 @@ class SRS {
           this.proj4 ??= proj4;
           if (wkt || esriwkt) {
             this.wkt ??= {};
-            this.wkt.ogc ??= wkt;
-            this.wkt.esri ??= esriwkt;
+            this.wkt.ogc ??= sortWKT(wkt);
+            this.wkt.esri ??= sortWKT(esriwkt);
           }
         }
       }
