@@ -36,7 +36,7 @@
   "dependencies": {
     "deepest-walk": "^1.0.2",
     "get-constructor-name": "^0.0.1",
-    "get-epsg-code": "1.0.0",
+    "get-epsg-code": "1.1.0",
     "is-wkt": "^0.2.0",
     "proj-data": "^0.0.1",
     "proj4": "^2.9.0",
