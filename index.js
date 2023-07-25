@@ -172,7 +172,7 @@ function equivalent(a, b, { debug = false } = { debug: false }) {
   return a.eq(b, { debug });
 }
 
-SRS_CLASS = SRS;
+const SRS_CLASS = SRS;
 
 module.exports = {
   equivalent,
